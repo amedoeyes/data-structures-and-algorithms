@@ -1,8 +1,8 @@
 type Options = {
-	order: "asc" | "desc";
+	order?: "asc" | "desc";
 };
 
-export default function insertionSort<T>(array: T[], options: Options = { order: "asc" }): T[] {
+export default function insertionSort(array: number[], options: Options = { order: "asc" }): number[] {
 	const isAsc = options.order === "asc";
 
 	for (let index = 0; index < array.length; index++) {
