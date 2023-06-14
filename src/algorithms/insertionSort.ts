@@ -1,20 +1,11 @@
-type Options = {
-	order?: "asc" | "desc";
-};
-
-export default function insertionSort(array: number[], options: Options = { order: "asc" }): number[] {
-	const isAsc = options.order === "asc";
-
+export default function insertionSort<T>(array: T[]): T[] {
 	for (let index = 0; index < array.length; index++) {
-		const currentValue = array[index];
-		let prevIndex = index - 1;
+		let sortIndex = index;
 
-		while (prevIndex >= 0 && isAsc ? array[prevIndex] > currentValue : array[prevIndex] < currentValue) {
-			array[prevIndex + 1] = array[prevIndex];
-			prevIndex--;
+		while (sortIndex > 0 && array[sortIndex] < array[sortIndex - 1]) {
+			[array[sortIndex - 1], array[sortIndex]] = [array[sortIndex], array[sortIndex - 1]];
+			sortIndex--;
 		}
-
-		array[prevIndex + 1] = currentValue;
 	}
 
 	return array;

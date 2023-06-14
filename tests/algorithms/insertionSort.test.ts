@@ -5,15 +5,17 @@ describe("Insertion Sort", () => {
 		expect(insertionSort([5, 2, 4, 6, 1, 3])).toEqual([1, 2, 3, 4, 5, 6]);
 	});
 
-	test("[31, 41, 59, 26, 41, 58] => [26, 31, 41, 41, 58, 59,]", () => {
-		expect(insertionSort([31, 41, 59, 26, 41, 58])).toEqual([26, 31, 41, 41, 58, 59]);
-	});
-
-	test("[5, 2, 4, 6, 1, 3] => [6, 5, 4, 3, 2, 1]", () => {
-		expect(insertionSort([5, 2, 4, 6, 1, 3], { order: "desc" })).toEqual([6, 5, 4, 3, 2, 1]);
-	});
-
-	test("[31, 41, 59, 26, 41, 58] => [59, 58, 41, 41, 31, 26]", () => {
-		expect(insertionSort([31, 41, 59, 26, 41, 58], { order: "desc" })).toEqual([59, 58, 41, 41, 31, 26]);
+	test("[I, N, S, E, R, T, I, O, N] => [E, I, I, N, N, O, R, S, T]", () => {
+		expect(insertionSort(["I", "N", "S", "E", "R", "T", "I", "O", "N"])).toEqual([
+			"E",
+			"I",
+			"I",
+			"N",
+			"N",
+			"O",
+			"R",
+			"S",
+			"T",
+		]);
 	});
 });

@@ -1,20 +1,12 @@
-type Options = { order?: "asc" | "desc" };
-
-export default function selectionSort(array: number[], options: Options = { order: "asc" }): number[] {
-	const isAsc = options.order === "asc";
-
+export default function selectionSort(array: number[]): number[] {
 	for (let currentIndex = 0; currentIndex < array.length; currentIndex++) {
-		const currentValue = array[currentIndex];
-		let extremeIndex = currentIndex;
+		let minIndex = currentIndex;
 
 		for (let searchIndex = currentIndex; searchIndex < array.length; searchIndex++) {
-			if (isAsc ? array[searchIndex] < array[extremeIndex] : array[searchIndex] > array[extremeIndex]) {
-				extremeIndex = searchIndex;
-			}
+			if (array[searchIndex] < array[minIndex]) minIndex = searchIndex;
 		}
 
-		array[currentIndex] = array[extremeIndex];
-		array[extremeIndex] = currentValue;
+		[array[currentIndex], array[minIndex]] = [array[minIndex], array[currentIndex]];
 	}
 
 	return array;
