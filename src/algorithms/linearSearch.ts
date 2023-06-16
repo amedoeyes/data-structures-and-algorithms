@@ -1,8 +1,8 @@
 export default function linearSearch<T>(array: T[], value: number): number | null {
 	let indexOfValue = null;
 
-	for (let currentIndex = 0; currentIndex < array.length; currentIndex++) {
-		if (array[currentIndex] === value) indexOfValue = currentIndex;
+	for (let i = 0; i < array.length; i++) {
+		if (array[i] === value) indexOfValue = i;
 	}
 
 	return indexOfValue;

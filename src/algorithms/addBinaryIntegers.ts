@@ -3,12 +3,12 @@ export default function addBinaryIntegers(array1: number[], array2: number[]): n
 	const result = Array(length + 1).fill(0);
 	let carry = 0;
 
-	for (let currentIndex = length - 1; currentIndex >= 0; currentIndex--) {
-		const bit1 = array1[currentIndex] || 0;
-		const bit2 = array2[currentIndex] || 0;
+	for (let i = length - 1; i >= 0; i--) {
+		const bit1 = array1[i] || 0;
+		const bit2 = array2[i] || 0;
 		const sum = bit1 + bit2 + carry;
 
-		result[currentIndex + 1] = sum % 2;
+		result[i + 1] = sum % 2;
 		carry = Math.floor(sum / 2);
 	}
 

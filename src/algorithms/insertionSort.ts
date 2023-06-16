@@ -1,10 +1,10 @@
 export default function insertionSort<T>(array: T[]): T[] {
-	for (let index = 0; index < array.length; index++) {
-		let sortIndex = index;
+	for (let i = 0; i < array.length; i++) {
+		let j = i;
 
-		while (sortIndex > 0 && array[sortIndex] < array[sortIndex - 1]) {
-			[array[sortIndex - 1], array[sortIndex]] = [array[sortIndex], array[sortIndex - 1]];
-			sortIndex--;
+		while (j > 0 && array[j] < array[j - 1]) {
+			[array[j - 1], array[j]] = [array[j], array[j - 1]];
+			j--;
 		}
 	}
 

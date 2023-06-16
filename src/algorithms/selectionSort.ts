@@ -1,12 +1,12 @@
-export default function selectionSort(array: number[]): number[] {
-	for (let currentIndex = 0; currentIndex < array.length; currentIndex++) {
-		let minIndex = currentIndex;
+export default function selectionSort<T>(array: T[]): T[] {
+	for (let i = 0; i < array.length; i++) {
+		let min = i;
 
-		for (let searchIndex = currentIndex; searchIndex < array.length; searchIndex++) {
-			if (array[searchIndex] < array[minIndex]) minIndex = searchIndex;
+		for (let j = i + 1; j < array.length; j++) {
+			if (array[j] < array[min]) min = j;
 		}
 
-		[array[currentIndex], array[minIndex]] = [array[minIndex], array[currentIndex]];
+		[array[i], array[min]] = [array[min], array[i]];
 	}
 
 	return array;
