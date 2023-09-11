@@ -27,7 +27,6 @@ export default class HashTable<K, V> {
 
 	private hash(key: K): number {
 		const keyString = String(key);
-
 		let hash = 5381;
 
 		for (let i = 0; i < keyString.length; i++) {

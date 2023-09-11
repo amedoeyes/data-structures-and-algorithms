@@ -1,4 +1,5 @@
 class Node<T> {
+
 	value: T;
 	parent: Node<T> | null;
 	left: Node<T> | null;
