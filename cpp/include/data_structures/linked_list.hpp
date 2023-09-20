@@ -1,7 +1,7 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
-#include <functional>
+#include <cstddef>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
@@ -19,6 +19,22 @@ class LinkedList {
 
 	public:
 	LinkedList() : head_{nullptr}, tail_{nullptr}, size_{0} {};
+
+	LinkedList(const LinkedList<T> &other)
+		: head_{nullptr}, tail_{nullptr}, size_{0} {
+		for (const T &data : other) {
+			insertBack(data);
+		}
+	}
+
+	LinkedList(LinkedList<T> &&other)
+		: head_{std::move(other.head_)},
+		  tail_{std::move(other.tail_)},
+		  size_{other.size_} {
+		other.head_ = nullptr;
+		other.tail_ = nullptr;
+		other.size_ = 0;
+	}
 
 	auto front() const -> const T & {
 		return head_->data;
@@ -67,18 +83,18 @@ class LinkedList {
 	};
 
 	auto removeFront() -> void {
-		removeNodeAt(head_);
+		removeNode(head_);
 	};
 
 	auto removeBack() -> void {
-		removeNodeAt(tail_);
+		removeNode(tail_);
 	};
 
 	auto remove(const int &index) -> void {
 		if (index == 0) return removeFront();
 		if (index == size_ - 1) return removeBack();
 
-		removeNodeAt(getNodeAt(index));
+		removeNode(getNodeAt(index));
 	};
 
 	auto reverse() -> void {
@@ -90,12 +106,6 @@ class LinkedList {
 		while (temp) {
 			std::swap(temp->prev, temp->next);
 			temp = temp->prev;
-		}
-	};
-
-	auto traverse(const std::function<void(T &)> &visit) -> void {
-		for (T &it : *this) {
-			visit(it);
 		}
 	};
 
@@ -126,10 +136,6 @@ class LinkedList {
 			return *this;
 		};
 
-		auto operator==(const Iterator &other) const -> bool {
-			return node == other.node;
-		};
-
 		auto operator!=(const Iterator &other) const -> bool {
 			return node != other.node;
 		};
@@ -138,13 +144,41 @@ class LinkedList {
 		std::shared_ptr<Node> node;
 	};
 
-	auto begin() -> Iterator {
+	auto begin() const -> const Iterator {
 		return Iterator{head_};
 	};
 
-	auto end() -> Iterator {
+	auto end() const -> const Iterator {
 		return Iterator{nullptr};
 	};
+
+	auto operator=(const LinkedList<T> &other) -> LinkedList<T> & {
+		if (this != &other) {
+			clear();
+
+			for (const T &data : other) {
+				insertBack(data);
+			}
+		}
+
+		return *this;
+	}
+
+	LinkedList<T> &operator=(LinkedList<T> &&other) {
+		if (this != &other) {
+			clear();
+
+			head_ = std::move(other.head_);
+			tail_ = std::move(other.tail_);
+			size_ = other.size_;
+
+			other.head_ = nullptr;
+			other.tail_ = nullptr;
+			other.size_ = 0;
+		}
+
+		return *this;
+	}
 
 	auto operator[](const int &index) -> T & {
 		return getNodeAt(index)->data;
@@ -158,6 +192,7 @@ class LinkedList {
 
 		while (thisNode && otherNode) {
 			if (thisNode->data != otherNode->data) return false;
+
 			thisNode = thisNode->next;
 			otherNode = otherNode->next;
 		}
@@ -168,16 +203,16 @@ class LinkedList {
 	private:
 	std::shared_ptr<Node> head_;
 	std::shared_ptr<Node> tail_;
-	int size_;
+	size_t size_;
 
-	auto initializeList(std::shared_ptr<Node> node) -> void {
+	auto initializeList(const std::shared_ptr<Node> &node) -> void {
 		head_ = node;
 		tail_ = node;
 
 		++size_;
 	}
 
-	auto insertNodeAtHead(std::shared_ptr<Node> newNode) -> void {
+	auto insertNodeAtHead(const std::shared_ptr<Node> &newNode) -> void {
 		if (isEmpty()) return initializeList(newNode);
 
 		newNode->next = head_;
@@ -189,7 +224,7 @@ class LinkedList {
 		++size_;
 	}
 
-	auto insertNodeAtTail(std::shared_ptr<Node> newNode) -> void {
+	auto insertNodeAtTail(const std::shared_ptr<Node> &newNode) -> void {
 		if (isEmpty()) return initializeList(newNode);
 
 		newNode->next = nullptr;
@@ -202,7 +237,7 @@ class LinkedList {
 	}
 
 	auto insertNodeBefore(
-		std::shared_ptr<Node> node, std::shared_ptr<Node> newNode
+		const std::shared_ptr<Node> &node, const std::shared_ptr<Node> &newNode
 	) -> void {
 		if (isEmpty()) return initializeList(newNode);
 		if (node == head_) return insertNodeAtHead(newNode);
@@ -217,7 +252,7 @@ class LinkedList {
 	}
 
 	auto insertNodeAfter(
-		std::shared_ptr<Node> node, std::shared_ptr<Node> newNode
+		const std::shared_ptr<Node> &node, const std::shared_ptr<Node> &newNode
 	) -> void {
 		if (isEmpty()) return initializeList(newNode);
 		if (node == tail_) return insertNodeAtTail(newNode);
@@ -244,7 +279,7 @@ class LinkedList {
 		return temp;
 	}
 
-	auto removeNodeAt(std::shared_ptr<Node> node) -> void {
+	auto removeNode(std::shared_ptr<Node> node) -> void {
 		if (!node) return;
 
 		if (node == head_) {

@@ -1,7 +1,6 @@
 #include "data_structures/linked_list.hpp"
-
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 #include <vector>
 
 auto initializeList() -> LinkedList<int> {
@@ -15,6 +14,21 @@ auto initializeList() -> LinkedList<int> {
 }
 
 TEST_CASE("LinkedList", "[LinkedList]") {
+	SECTION("copy") {
+		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list2{list1};
+
+		REQUIRE(list1 == list2);
+	}
+
+	SECTION("move") {
+		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list2{std::move(list1)};
+
+		REQUIRE(list1.size() == 0);
+		REQUIRE(list2.size() == 3);
+	}
+
 	SECTION("front") {
 		LinkedList<int> list{initializeList()};
 
@@ -158,42 +172,14 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		REQUIRE(list[2] == 1);
 	}
 
-	SECTION("traverse") {
-		LinkedList<int> list{initializeList()};
-
-		int count{0};
-		std::vector<int> traversal;
-
-		list.traverse([&count, &traversal](int data) {
-			traversal.push_back(data);
-			count++;
-		});
-
-		REQUIRE(count == 3);
-		REQUIRE(traversal[0] == 1);
-		REQUIRE(traversal[1] == 2);
-		REQUIRE(traversal[2] == 3);
-	}
-
-	SECTION("traverse modify") {
-		LinkedList<int> list{initializeList()};
-
-		list.traverse([](int& data) {
-			data *= 2;
-		});
-
-		REQUIRE(list[0] == 2);
-		REQUIRE(list[1] == 4);
-		REQUIRE(list[2] == 6);
-	}
-
 	SECTION("iterator begin end") {
 		LinkedList<int> list{initializeList()};
 
 		int count{0};
 		std::vector<int> iterated;
 
-		for (auto it{list.begin()}; it != list.end(); ++it) {
+		for (LinkedList<int>::Iterator it{list.begin()}; it != list.end();
+			 ++it) {
 			iterated.push_back(*it);
 			count++;
 		}
@@ -249,6 +235,33 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		list.insertBack(1);
 
 		REQUIRE_FALSE(list.isEmpty());
+	}
+
+	SECTION("operator=") {
+		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list2;
+
+		list2 = list1;
+
+		REQUIRE(list1 == list2);
+
+		list1.insertBack(4);
+
+		REQUIRE_FALSE(list1 == list2);
+
+		list2 = list1;
+
+		REQUIRE(list1 == list2);
+	}
+
+	SECTION("operator= move") {
+		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list2;
+
+		list2 = std::move(list1);
+
+		REQUIRE(list1.size() == 0);
+		REQUIRE(list2.size() == 3);
 	}
 
 	SECTION("operator[]") {
