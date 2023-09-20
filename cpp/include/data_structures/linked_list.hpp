@@ -2,10 +2,8 @@
 #define LINKEDLIST_H
 
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
-#include <string>
 #include <type_traits>
 
 template <typename T>
@@ -22,19 +20,15 @@ class LinkedList {
 	public:
 	LinkedList() : head_{nullptr}, tail_{nullptr}, size_{0} {};
 
-	auto front() -> T {
+	auto front() const -> const T & {
 		return head_->data;
 	};
 
-	auto back() -> T {
+	auto back() const -> const T & {
 		return tail_->data;
 	};
 
-	auto get(const int &index) -> T {
-		return getNode(index)->data;
-	};
-
-	auto size() -> const int {
+	auto size() const -> const int {
 		return size_;
 	};
 
@@ -52,7 +46,7 @@ class LinkedList {
 		if (index == 0) return insertNodeAfter(head_, newNode);
 		if (index == size_ - 1) return insertNodeAfter(tail_, newNode);
 
-		insertNodeAfter(getNode(index), newNode);
+		insertNodeAfter(getNodeAt(index), newNode);
 	};
 
 	auto insertBefore(const T &data, const int &index) -> void {
@@ -61,7 +55,7 @@ class LinkedList {
 		if (index == 0) return insertNodeBefore(head_, newNode);
 		if (index == size_ - 1) return insertNodeBefore(tail_, newNode);
 
-		insertNodeBefore(getNode(index), newNode);
+		insertNodeBefore(getNodeAt(index), newNode);
 	}
 
 	auto updateFront(const T &data) -> void {
@@ -72,26 +66,19 @@ class LinkedList {
 		tail_->data = data;
 	};
 
-	auto update(const int &index, const T &data) -> void {
-		if (index == 0) return updateFront(data);
-		if (index == size_ - 1) return updateBack(data);
-
-		getNode(index)->data = data;
-	};
-
 	auto removeFront() -> void {
-		removeNode(head_);
+		removeNodeAt(head_);
 	};
 
 	auto removeBack() -> void {
-		removeNode(tail_);
+		removeNodeAt(tail_);
 	};
 
 	auto remove(const int &index) -> void {
 		if (index == 0) return removeFront();
 		if (index == size_ - 1) return removeBack();
 
-		removeNode(getNode(index));
+		removeNodeAt(getNodeAt(index));
 	};
 
 	auto reverse() -> void {
@@ -106,8 +93,8 @@ class LinkedList {
 		}
 	};
 
-	auto traverse(const std::function<void(T)> &visit) -> void {
-		for (const T &it : *this) {
+	auto traverse(const std::function<void(T &)> &visit) -> void {
+		for (T &it : *this) {
 			visit(it);
 		}
 	};
@@ -130,7 +117,7 @@ class LinkedList {
 		public:
 		Iterator(std::shared_ptr<Node> node) : node{node} {};
 
-		auto operator*() -> T {
+		auto operator*() -> T & {
 			return node->data;
 		};
 
@@ -139,11 +126,11 @@ class LinkedList {
 			return *this;
 		};
 
-		auto operator==(const Iterator &other) -> bool {
+		auto operator==(const Iterator &other) const -> bool {
 			return node == other.node;
 		};
 
-		auto operator!=(const Iterator &other) -> bool {
+		auto operator!=(const Iterator &other) const -> bool {
 			return node != other.node;
 		};
 
@@ -158,6 +145,25 @@ class LinkedList {
 	auto end() -> Iterator {
 		return Iterator{nullptr};
 	};
+
+	auto operator[](const int &index) -> T & {
+		return getNodeAt(index)->data;
+	}
+
+	auto operator==(const LinkedList<T> &other) const -> bool {
+		if (size_ != other.size_) return false;
+
+		auto thisNode{head_};
+		auto otherNode{other.head_};
+
+		while (thisNode && otherNode) {
+			if (thisNode->data != otherNode->data) return false;
+			thisNode = thisNode->next;
+			otherNode = otherNode->next;
+		}
+
+		return true;
+	}
 
 	private:
 	std::shared_ptr<Node> head_;
@@ -225,7 +231,7 @@ class LinkedList {
 		++size_;
 	}
 
-	auto getNode(const int &index) -> std::shared_ptr<Node> {
+	auto getNodeAt(const int &index) const -> std::shared_ptr<Node> {
 		if (index < 0 || index >= size_)
 			throw std::out_of_range("Index out of range");
 
@@ -238,7 +244,7 @@ class LinkedList {
 		return temp;
 	}
 
-	auto removeNode(std::shared_ptr<Node> node) -> void {
+	auto removeNodeAt(std::shared_ptr<Node> node) -> void {
 		if (!node) return;
 
 		if (node == head_) {
