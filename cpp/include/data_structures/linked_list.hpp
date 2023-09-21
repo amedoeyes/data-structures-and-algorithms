@@ -1,13 +1,16 @@
-#ifndef LINKEDLIST_H
-#define LINKEDLIST_H
+#ifndef LINKEDLIST_HPP
+#define LINKEDLIST_HPP
 
 #include <cstddef>
+#include <initializer_list>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
 
 template <typename T>
 class LinkedList {
+	private:
 	class Node {
 		public:
 		Node(T data) : data{data}, next{nullptr}, prev{nullptr} {};
@@ -27,6 +30,38 @@ class LinkedList {
 		}
 	}
 
+	public:
+	class Iterator {
+		public:
+		Iterator(std::shared_ptr<Node> node) : node{node} {};
+
+		auto operator*() -> T & {
+			return node->data;
+		};
+
+		auto operator+(const int &steps) const -> Iterator {
+			Iterator temp{*this};
+
+			for (int i{0}; i < steps; ++i) {
+				++temp;
+			}
+
+			return temp;
+		}
+
+		auto operator++() -> Iterator & {
+			node = node->next;
+			return *this;
+		};
+
+		auto operator!=(const Iterator &other) const -> bool {
+			return node != other.node;
+		};
+
+		private:
+		std::shared_ptr<Node> node;
+	};
+
 	LinkedList(LinkedList<T> &&other)
 		: head_{std::move(other.head_)},
 		  tail_{std::move(other.tail_)},
@@ -34,6 +69,20 @@ class LinkedList {
 		other.head_ = nullptr;
 		other.tail_ = nullptr;
 		other.size_ = 0;
+	}
+
+	LinkedList(const Iterator &first, const Iterator &last)
+		: head_{nullptr}, tail_{nullptr}, size_{0} {
+		for (Iterator it{first}; it != last; ++it) {
+			insertBack(*it);
+		}
+	}
+
+	LinkedList(std::initializer_list<T> values)
+		: head_{nullptr}, tail_{nullptr}, size_{0} {
+		for (const T &data : values) {
+			insertBack(data);
+		}
 	}
 
 	auto front() const -> const T & {
@@ -97,6 +146,10 @@ class LinkedList {
 		removeNode(getNodeAt(index));
 	};
 
+	auto sort() -> void {
+		mergeSort(*this);
+	}
+
 	auto reverse() -> void {
 		std::shared_ptr<Node> temp{head_};
 
@@ -121,27 +174,6 @@ class LinkedList {
 
 		tail_ = nullptr;
 		size_ = 0;
-	};
-
-	class Iterator {
-		public:
-		Iterator(std::shared_ptr<Node> node) : node{node} {};
-
-		auto operator*() -> T & {
-			return node->data;
-		};
-
-		auto operator++() -> Iterator & {
-			node = node->next;
-			return *this;
-		};
-
-		auto operator!=(const Iterator &other) const -> bool {
-			return node != other.node;
-		};
-
-		private:
-		std::shared_ptr<Node> node;
 	};
 
 	auto begin() const -> const Iterator {
@@ -293,6 +325,31 @@ class LinkedList {
 
 		node = nullptr;
 		--size_;
+	}
+
+	auto mergeSort(LinkedList<T> &list) -> void {
+		if (list.size() <= 1) return;
+
+		auto mid = list.begin() + list.size() / 2;
+		LinkedList<T> left{list.begin(), mid};
+		LinkedList<T> right{mid, list.end()};
+
+		mergeSort(left);
+		mergeSort(right);
+
+		LinkedList<T> merged;
+		int l{0};
+		int r{0};
+
+		while (l < left.size() && r < right.size()) {
+			if (left[l] < right[r]) merged.insertBack(left[l++]);
+			else merged.insertBack(right[r++]);
+		}
+
+		while (l < left.size()) merged.insertBack(left[l++]);
+		while (r < right.size()) merged.insertBack(right[r++]);
+
+		list = std::move(merged);
 	}
 };
 

@@ -1,6 +1,8 @@
 #include "data_structures/linked_list.hpp"
+
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <iostream>
 #include <vector>
 
 auto initializeList() -> LinkedList<int> {
@@ -15,49 +17,60 @@ auto initializeList() -> LinkedList<int> {
 
 TEST_CASE("LinkedList", "[LinkedList]") {
 	SECTION("copy") {
-		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list1{{1, 2, 3}};
 		LinkedList<int> list2{list1};
 
 		REQUIRE(list1 == list2);
 	}
 
 	SECTION("move") {
-		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list1{{1, 2, 3}};
 		LinkedList<int> list2{std::move(list1)};
 
 		REQUIRE(list1.size() == 0);
 		REQUIRE(list2.size() == 3);
 	}
 
+	SECTION("initializer_list") {
+		LinkedList<int> list{{1, 2, 3}};
+
+		REQUIRE(list.size() == 3);
+
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == i + 1);
+		}
+	}
+
 	SECTION("front") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		REQUIRE(list.front() == 1);
 	}
 
 	SECTION("back") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		REQUIRE(list.back() == 3);
 	}
 
 	SECTION("size") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		REQUIRE(list.size() == 3);
-
-		list.insertBack(4);
-
-		REQUIRE(list.size() == 4);
 	}
 
 	SECTION("insertBack") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list;
 
-		REQUIRE(list[0] == 1);
-		REQUIRE(list[1] == 2);
-		REQUIRE(list[2] == 3);
+		list.insertBack(1);
+		list.insertBack(2);
+		list.insertBack(3);
+
 		REQUIRE(list.size() == 3);
+
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == i + 1);
+		}
 	}
 
 	SECTION("insertFront") {
@@ -67,14 +80,15 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		list.insertFront(2);
 		list.insertFront(3);
 
-		REQUIRE(list[0] == 3);
-		REQUIRE(list[1] == 2);
-		REQUIRE(list[2] == 1);
 		REQUIRE(list.size() == 3);
+
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == list.size() - i);
+		}
 	}
 
 	SECTION("insertBefore") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.insertBefore(4, 1);
 
@@ -83,7 +97,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("insertAfter") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.insertAfter(4, 1);
 
@@ -92,7 +106,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("updateFront") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.updateFront(4);
 
@@ -100,7 +114,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("updateBack") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.updateBack(4);
 
@@ -108,7 +122,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("removeFront") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.removeFront();
 
@@ -126,7 +140,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("removeBack") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.removeBack();
 
@@ -144,7 +158,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("remove") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.remove(1);
 
@@ -162,18 +176,28 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		REQUIRE(list.isEmpty());
 	}
 
+	SECTION("sort") {
+		LinkedList<int> list{{4, 2, 1, 3}};
+
+		list.sort();
+
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == i + 1);
+		}
+	}
+
 	SECTION("reverse") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.reverse();
 
-		REQUIRE(list[0] == 3);
-		REQUIRE(list[1] == 2);
-		REQUIRE(list[2] == 1);
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == list.size() - i);
+		}
 	}
 
 	SECTION("iterator begin end") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		int count{0};
 		std::vector<int> iterated;
@@ -185,13 +209,14 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		}
 
 		REQUIRE(count == 3);
-		REQUIRE(iterated[0] == 1);
-		REQUIRE(iterated[1] == 2);
-		REQUIRE(iterated[2] == 3);
+
+		for (int i{0}; i < iterated.size(); ++i) {
+			REQUIRE(iterated[i] == i + 1);
+		}
 	}
 
 	SECTION("iterator :") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		int count{0};
 		std::vector<int> iterated;
@@ -202,25 +227,26 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		}
 
 		REQUIRE(count == 3);
-		REQUIRE(iterated[0] == 1);
-		REQUIRE(iterated[1] == 2);
-		REQUIRE(iterated[2] == 3);
+
+		for (int i{0}; i < iterated.size(); ++i) {
+			REQUIRE(iterated[i] == i + 1);
+		}
 	}
 
 	SECTION("iterator modify") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		for (int& it : list) {
 			it *= 2;
 		}
 
-		REQUIRE(list[0] == 2);
-		REQUIRE(list[1] == 4);
-		REQUIRE(list[2] == 6);
+		for (int i{0}; i < list.size(); ++i) {
+			REQUIRE(list[i] == (i+1) * 2);
+		}
 	}
 
 	SECTION("clear") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		list.clear();
 
@@ -238,7 +264,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("operator=") {
-		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list1{{1, 2, 3}};
 		LinkedList<int> list2;
 
 		list2 = list1;
@@ -255,7 +281,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("operator= move") {
-		LinkedList<int> list1{initializeList()};
+		LinkedList<int> list1{{1, 2, 3}};
 		LinkedList<int> list2;
 
 		list2 = std::move(list1);
@@ -265,7 +291,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("operator[]") {
-		LinkedList<int> list{initializeList()};
+		LinkedList<int> list{{1, 2, 3}};
 
 		REQUIRE(list[0] == 1);
 		REQUIRE(list[1] == 2);
@@ -283,14 +309,14 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 	}
 
 	SECTION("operator==") {
-		LinkedList<int> list{initializeList()};
-		LinkedList<int> list2{initializeList()};
+		LinkedList<int> list1{{1, 2, 3}};
+		LinkedList<int> list2{{1, 2, 3}};
 
-		REQUIRE(list == list2);
+		REQUIRE(list1 == list2);
 
-		list.insertBack(1);
+		list1.insertBack(1);
 
-		REQUIRE_FALSE(list == list2);
+		REQUIRE_FALSE(list1 == list2);
 	}
 
 	SECTION("random values") {
