@@ -1,9 +1,8 @@
-#ifndef LINKEDLIST_HPP
-#define LINKEDLIST_HPP
+#ifndef LINKED_LIST_HPP
+#define LINKED_LIST_HPP
 
 #include <cstddef>
 #include <initializer_list>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
@@ -19,16 +18,6 @@ class LinkedList {
 		std::shared_ptr<Node> next;
 		std::shared_ptr<Node> prev;
 	};
-
-	public:
-	LinkedList() : head_{nullptr}, tail_{nullptr}, size_{0} {};
-
-	LinkedList(const LinkedList<T> &other)
-		: head_{nullptr}, tail_{nullptr}, size_{0} {
-		for (const T &data : other) {
-			insertBack(data);
-		}
-	}
 
 	public:
 	class Iterator {
@@ -62,13 +51,20 @@ class LinkedList {
 		std::shared_ptr<Node> node;
 	};
 
+	LinkedList() : head_{nullptr}, tail_{nullptr}, size_{0} {};
+
+	LinkedList(const LinkedList<T> &other)
+		: head_{nullptr}, tail_{nullptr}, size_{0} {
+		for (const T &data : other) {
+			insertBack(data);
+		}
+	}
+
 	LinkedList(LinkedList<T> &&other)
 		: head_{std::move(other.head_)},
 		  tail_{std::move(other.tail_)},
 		  size_{other.size_} {
-		other.head_ = nullptr;
-		other.tail_ = nullptr;
-		other.size_ = 0;
+		other.clear();
 	}
 
 	LinkedList(const Iterator &first, const Iterator &last)
@@ -83,6 +79,52 @@ class LinkedList {
 		for (const T &data : values) {
 			insertBack(data);
 		}
+	}
+
+	auto operator=(const LinkedList<T> &other) -> LinkedList<T> & {
+		if (this != &other) {
+			clear();
+
+			for (const T &data : other) {
+				insertBack(data);
+			}
+		}
+
+		return *this;
+	}
+
+	LinkedList<T> &operator=(LinkedList<T> &&other) {
+		if (this != &other) {
+			clear();
+
+			head_ = std::move(other.head_);
+			tail_ = std::move(other.tail_);
+			size_ = other.size_;
+
+			other.clear();
+		}
+
+		return *this;
+	}
+
+	auto operator[](const int &index) -> T & {
+		return getNodeAt(index)->data;
+	}
+
+	auto operator==(const LinkedList<T> &other) const -> bool {
+		if (size_ != other.size_) return false;
+
+		auto thisNode{head_};
+		auto otherNode{other.head_};
+
+		while (thisNode && otherNode) {
+			if (thisNode->data != otherNode->data) return false;
+
+			thisNode = thisNode->next;
+			otherNode = otherNode->next;
+		}
+
+		return true;
 	}
 
 	auto front() const -> const T & {
@@ -183,54 +225,6 @@ class LinkedList {
 	auto end() const -> const Iterator {
 		return Iterator{nullptr};
 	};
-
-	auto operator=(const LinkedList<T> &other) -> LinkedList<T> & {
-		if (this != &other) {
-			clear();
-
-			for (const T &data : other) {
-				insertBack(data);
-			}
-		}
-
-		return *this;
-	}
-
-	LinkedList<T> &operator=(LinkedList<T> &&other) {
-		if (this != &other) {
-			clear();
-
-			head_ = std::move(other.head_);
-			tail_ = std::move(other.tail_);
-			size_ = other.size_;
-
-			other.head_ = nullptr;
-			other.tail_ = nullptr;
-			other.size_ = 0;
-		}
-
-		return *this;
-	}
-
-	auto operator[](const int &index) -> T & {
-		return getNodeAt(index)->data;
-	}
-
-	auto operator==(const LinkedList<T> &other) const -> bool {
-		if (size_ != other.size_) return false;
-
-		auto thisNode{head_};
-		auto otherNode{other.head_};
-
-		while (thisNode && otherNode) {
-			if (thisNode->data != otherNode->data) return false;
-
-			thisNode = thisNode->next;
-			otherNode = otherNode->next;
-		}
-
-		return true;
-	}
 
 	private:
 	std::shared_ptr<Node> head_;

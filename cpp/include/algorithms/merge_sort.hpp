@@ -2,7 +2,6 @@
 #define MERGE_SORT_HPP
 
 #include <algorithm>
-#include <iostream>
 #include <vector>
 
 template <typename T>

@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
-#include <iostream>
 #include <vector>
 
 auto initializeList() -> LinkedList<int> {
@@ -39,6 +38,62 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		for (int i{0}; i < list.size(); ++i) {
 			REQUIRE(list[i] == i + 1);
 		}
+	}
+
+	SECTION("operator=") {
+		LinkedList<int> list1{{1, 2, 3}};
+		LinkedList<int> list2;
+
+		list2 = list1;
+
+		REQUIRE(list1 == list2);
+
+		list1.insertBack(4);
+
+		REQUIRE_FALSE(list1 == list2);
+
+		list2 = list1;
+
+		REQUIRE(list1 == list2);
+	}
+
+	SECTION("operator= move") {
+		LinkedList<int> list1{{1, 2, 3}};
+		LinkedList<int> list2;
+
+		list2 = std::move(list1);
+
+		REQUIRE(list1.size() == 0);
+		REQUIRE(list2.size() == 3);
+	}
+
+	SECTION("operator[]") {
+		LinkedList<int> list{{1, 2, 3}};
+
+		REQUIRE(list[0] == 1);
+		REQUIRE(list[1] == 2);
+		REQUIRE(list[2] == 3);
+
+		list[0] = 4;
+		list[1] = 5;
+		list[2] = 6;
+
+		REQUIRE(list[0] == 4);
+		REQUIRE(list[1] == 5);
+		REQUIRE(list[2] == 6);
+
+		REQUIRE_THROWS(list[3]);
+	}
+
+	SECTION("operator==") {
+		LinkedList<int> list1{{1, 2, 3}};
+		LinkedList<int> list2{{1, 2, 3}};
+
+		REQUIRE(list1 == list2);
+
+		list1.insertBack(1);
+
+		REQUIRE_FALSE(list1 == list2);
 	}
 
 	SECTION("front") {
@@ -241,7 +296,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		}
 
 		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == (i+1) * 2);
+			REQUIRE(list[i] == (i + 1) * 2);
 		}
 	}
 
@@ -263,61 +318,6 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		REQUIRE_FALSE(list.isEmpty());
 	}
 
-	SECTION("operator=") {
-		LinkedList<int> list1{{1, 2, 3}};
-		LinkedList<int> list2;
-
-		list2 = list1;
-
-		REQUIRE(list1 == list2);
-
-		list1.insertBack(4);
-
-		REQUIRE_FALSE(list1 == list2);
-
-		list2 = list1;
-
-		REQUIRE(list1 == list2);
-	}
-
-	SECTION("operator= move") {
-		LinkedList<int> list1{{1, 2, 3}};
-		LinkedList<int> list2;
-
-		list2 = std::move(list1);
-
-		REQUIRE(list1.size() == 0);
-		REQUIRE(list2.size() == 3);
-	}
-
-	SECTION("operator[]") {
-		LinkedList<int> list{{1, 2, 3}};
-
-		REQUIRE(list[0] == 1);
-		REQUIRE(list[1] == 2);
-		REQUIRE(list[2] == 3);
-
-		list[0] = 4;
-		list[1] = 5;
-		list[2] = 6;
-
-		REQUIRE(list[0] == 4);
-		REQUIRE(list[1] == 5);
-		REQUIRE(list[2] == 6);
-
-		REQUIRE_THROWS(list[3]);
-	}
-
-	SECTION("operator==") {
-		LinkedList<int> list1{{1, 2, 3}};
-		LinkedList<int> list2{{1, 2, 3}};
-
-		REQUIRE(list1 == list2);
-
-		list1.insertBack(1);
-
-		REQUIRE_FALSE(list1 == list2);
-	}
 
 	SECTION("random values") {
 		LinkedList<int> list;
