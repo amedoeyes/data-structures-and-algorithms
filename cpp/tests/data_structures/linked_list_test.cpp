@@ -7,9 +7,9 @@
 auto initializeList() -> LinkedList<int> {
 	LinkedList<int> list;
 
-	list.insertBack(1);
-	list.insertBack(2);
-	list.insertBack(3);
+	list.pushBack(1);
+	list.pushBack(2);
+	list.pushBack(3);
 
 	return list;
 }
@@ -34,10 +34,9 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		LinkedList<int> list{{1, 2, 3}};
 
 		REQUIRE(list.size() == 3);
-
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == i + 1);
-		}
+		REQUIRE(list[0] == 1);
+		REQUIRE(list[1] == 2);
+		REQUIRE(list[2] == 3);
 	}
 
 	SECTION("operator=") {
@@ -48,7 +47,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 
 		REQUIRE(list1 == list2);
 
-		list1.insertBack(4);
+		list1.pushBack(4);
 
 		REQUIRE_FALSE(list1 == list2);
 
@@ -91,7 +90,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 
 		REQUIRE(list1 == list2);
 
-		list1.insertBack(1);
+		list1.pushBack(1);
 
 		REQUIRE_FALSE(list1 == list2);
 	}
@@ -114,50 +113,70 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		REQUIRE(list.size() == 3);
 	}
 
-	SECTION("insertBack") {
+	SECTION("pushBack") {
 		LinkedList<int> list;
 
-		list.insertBack(1);
-		list.insertBack(2);
-		list.insertBack(3);
+		list.pushBack(1);
+		list.pushBack(2);
+		list.pushBack(3);
 
 		REQUIRE(list.size() == 3);
-
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == i + 1);
-		}
+		REQUIRE(list[0] == 1);
+		REQUIRE(list[1] == 2);
+		REQUIRE(list[2] == 3);
 	}
 
-	SECTION("insertFront") {
+	SECTION("pushFront") {
 		LinkedList<int> list;
 
-		list.insertFront(1);
-		list.insertFront(2);
-		list.insertFront(3);
+		list.pushFront(1);
+		list.pushFront(2);
+		list.pushFront(3);
 
 		REQUIRE(list.size() == 3);
-
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == list.size() - i);
-		}
+		REQUIRE(list[0] == 3);
+		REQUIRE(list[1] == 2);
+		REQUIRE(list[2] == 1);
 	}
 
-	SECTION("insertBefore") {
+	SECTION("pushBefore") {
 		LinkedList<int> list{{1, 2, 3}};
 
-		list.insertBefore(4, 1);
+		list.pushBefore(0, 0);
 
-		REQUIRE(list[1] == 4);
 		REQUIRE(list.size() == 4);
+		REQUIRE(list[0] == 0);
+
+		list.pushBefore(4, 3);
+
+		REQUIRE(list.size() == 5);
+		REQUIRE(list[3] == 4);
+		REQUIRE(list[4] == 3);
+
+		list.pushBefore(5, 2);
+
+		REQUIRE(list.size() == 6);
+		REQUIRE(list[2] == 5);
 	}
 
-	SECTION("insertAfter") {
+	SECTION("pushAfter") {
 		LinkedList<int> list{{1, 2, 3}};
 
-		list.insertAfter(4, 1);
+		list.pushAfter(4, 2);
 
-		REQUIRE(list[2] == 4);
 		REQUIRE(list.size() == 4);
+		REQUIRE(list[3] == 4);
+
+		list.pushAfter(0, 0);
+
+		REQUIRE(list.size() == 5);
+		REQUIRE(list[0] == 1);
+		REQUIRE(list[1] == 0);
+
+		list.pushAfter(5, 2);
+
+		REQUIRE(list.size() == 6);
+		REQUIRE(list[3] == 5);
 	}
 
 	SECTION("updateFront") {
@@ -176,59 +195,51 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		REQUIRE(list.back() == 4);
 	}
 
-	SECTION("removeFront") {
+	SECTION("popFront") {
 		LinkedList<int> list{{1, 2, 3}};
 
-		list.removeFront();
-
+		REQUIRE(list.popFront() == 1);
 		REQUIRE(list.front() == 2);
 		REQUIRE(list.size() == 2);
 
-		list.removeFront();
-
+		REQUIRE(list.popFront() == 2);
 		REQUIRE(list.front() == 3);
 		REQUIRE(list.size() == 1);
 
-		list.removeFront();
-
+		REQUIRE(list.popFront() == 3);
 		REQUIRE(list.size() == 0);
 	}
 
-	SECTION("removeBack") {
+	SECTION("popBack") {
 		LinkedList<int> list{{1, 2, 3}};
 
-		list.removeBack();
-
+		REQUIRE(list.popBack() == 3);
+		REQUIRE(list.front() == 1);
 		REQUIRE(list.back() == 2);
 		REQUIRE(list.size() == 2);
 
-		list.removeBack();
-
+		REQUIRE(list.popBack() == 2);
 		REQUIRE(list.back() == 1);
 		REQUIRE(list.size() == 1);
 
-		list.removeBack();
-
+		REQUIRE(list.popBack() == 1);
 		REQUIRE(list.size() == 0);
 	}
 
-	SECTION("remove") {
+	SECTION("pop") {
 		LinkedList<int> list{{1, 2, 3}};
 
-		list.remove(1);
-
+		REQUIRE(list.pop(1) == 2);
 		REQUIRE(list[1] == 3);
 		REQUIRE(list.size() == 2);
 
-		list.remove(1);
-
-		REQUIRE(list.back() == 1);
+		REQUIRE(list.pop(1) == 3);
 		REQUIRE(list.front() == 1);
+		REQUIRE(list.back() == 1);
 		REQUIRE(list.size() == 1);
 
-		list.remove(0);
-
-		REQUIRE(list.isEmpty());
+		REQUIRE(list.pop(0) == 1);
+		REQUIRE(list.size() == 0);
 	}
 
 	SECTION("sort") {
@@ -236,19 +247,21 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 
 		list.sort();
 
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == i + 1);
-		}
+		REQUIRE(list[0] == 1);
+		REQUIRE(list[1] == 2);
+		REQUIRE(list[2] == 3);
+		REQUIRE(list[3] == 4);
 	}
 
 	SECTION("reverse") {
-		LinkedList<int> list{{1, 2, 3}};
+		LinkedList<int> list{{1, 2, 3, 4}};
 
 		list.reverse();
 
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == list.size() - i);
-		}
+		REQUIRE(list[0] == 4);
+		REQUIRE(list[1] == 3);
+		REQUIRE(list[2] == 2);
+		REQUIRE(list[3] == 1);
 	}
 
 	SECTION("iterator begin end") {
@@ -264,10 +277,9 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		}
 
 		REQUIRE(count == 3);
-
-		for (int i{0}; i < iterated.size(); ++i) {
-			REQUIRE(iterated[i] == i + 1);
-		}
+		REQUIRE(iterated[0] == 1);
+		REQUIRE(iterated[1] == 2);
+		REQUIRE(iterated[2] == 3);
 	}
 
 	SECTION("iterator :") {
@@ -282,10 +294,9 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		}
 
 		REQUIRE(count == 3);
-
-		for (int i{0}; i < iterated.size(); ++i) {
-			REQUIRE(iterated[i] == i + 1);
-		}
+		REQUIRE(iterated[0] == 1);
+		REQUIRE(iterated[1] == 2);
+		REQUIRE(iterated[2] == 3);
 	}
 
 	SECTION("iterator modify") {
@@ -295,9 +306,9 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 			it *= 2;
 		}
 
-		for (int i{0}; i < list.size(); ++i) {
-			REQUIRE(list[i] == (i + 1) * 2);
-		}
+		REQUIRE(list[0] == 2);
+		REQUIRE(list[1] == 4);
+		REQUIRE(list[2] == 6);
 	}
 
 	SECTION("clear") {
@@ -313,23 +324,22 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 
 		REQUIRE(list.isEmpty());
 
-		list.insertBack(1);
+		list.pushBack(1);
 
 		REQUIRE_FALSE(list.isEmpty());
 	}
 
-
-	SECTION("random values") {
+	SECTION("random") {
 		LinkedList<int> list;
 		std::vector<int> random;
 
-		for (int i{0}; i < 100; i++) {
-			int val = rand() % 1000;
-			list.insertBack(val);
+		for (size_t i{0}; i < 100; i++) {
+			int val { rand() % 1000 };
+			list.pushBack(val);
 			random.push_back(val);
 		}
 
-		for (int i{0}; i < 100; i++) {
+		for (size_t i{0}; i < 100; i++) {
 			REQUIRE(list[i] == random[i]);
 		}
 	}
