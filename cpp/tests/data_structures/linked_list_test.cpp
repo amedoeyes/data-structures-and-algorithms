@@ -1,18 +1,9 @@
 #include "data_structures/linked_list.hpp"
 
 #include <algorithm>
-#include <catch2/catch_test_macros.hpp>
 #include <vector>
 
-auto initializeList() -> LinkedList<int> {
-	LinkedList<int> list;
-
-	list.pushBack(1);
-	list.pushBack(2);
-	list.pushBack(3);
-
-	return list;
-}
+#include "catch2/catch_test_macros.hpp"
 
 TEST_CASE("LinkedList", "[LinkedList]") {
 	SECTION("copy") {
@@ -334,7 +325,7 @@ TEST_CASE("LinkedList", "[LinkedList]") {
 		std::vector<int> random;
 
 		for (size_t i{0}; i < 100; i++) {
-			int val { rand() % 1000 };
+			int val{rand() % 1000};
 			list.pushBack(val);
 			random.push_back(val);
 		}

@@ -1,10 +1,11 @@
 
+#include "catch2/catch_test_macros.hpp"
 #include "data_structures/stack.hpp"
 
-#include <catch2/catch_test_macros.hpp>
 #include <vector>
 
-TEST_CASE("stack") {
+
+TEST_CASE("Stack", "[Stack]") {
 	SECTION("push") {
 		Stack<int> stack;
 
@@ -64,6 +65,7 @@ TEST_CASE("stack") {
 		}
 
 		for (size_t i{0}; i < 10; ++i) {
+			REQUIRE(stack.peek() == random.back());
 			REQUIRE(stack.pop() == random.back());
 			random.pop_back();
 		}

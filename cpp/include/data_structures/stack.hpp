@@ -2,6 +2,7 @@
 #define STACK_HPP
 
 #include <stdexcept>
+
 #include "data_structures/linked_list.hpp"
 
 template <typename T>
@@ -12,12 +13,12 @@ class Stack {
 	}
 
 	auto pop() -> T {
-		if (isEmpty())throw std::runtime_error{"Stack is empty"};
+		if (isEmpty()) throw std::runtime_error{"Stack is empty"};
 		return data_.popBack();
 	}
 
 	auto peek() const -> T {
-		if (isEmpty())throw std::runtime_error{"Stack is empty"};
+		if (isEmpty()) throw std::runtime_error{"Stack is empty"};
 		return data_.back();
 	}
 
