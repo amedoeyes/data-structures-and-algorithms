@@ -7,3 +7,4 @@ AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: Empty
 AlignAfterOpenBracket: BlockIndent
+FixNamespaceComments: false
