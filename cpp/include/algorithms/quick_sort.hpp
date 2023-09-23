@@ -5,13 +5,15 @@
 #include <vector>
 
 template <typename T>
-void quickSort(std::vector<T>& vector, size_t left, size_t right) {
+void quickSort(
+	std::vector<T>& vector, const size_t& left, const size_t& right
+) {
 	if (left >= right) return;
 
-	T pivot = vector[right];
-	size_t i = left;
+	T pivot{vector[right]};
+	size_t i{left};
 
-	for (size_t j = left; j < right; ++j) {
+	for (size_t j{left}; j < right; ++j) {
 		if (vector[j] <= pivot) std::swap(vector[i++], vector[j]);
 	}
 
