@@ -12,7 +12,7 @@ class LinkedList {
 	private:
 	class Node {
 		public:
-		Node(T data) : data{data}, next{nullptr}, prev{nullptr} {};
+		Node(const T data) : data{data}, next{nullptr}, prev{nullptr} {};
 
 		T data;
 		std::shared_ptr<Node> next;
@@ -95,7 +95,7 @@ class LinkedList {
 		return *this;
 	}
 
-	LinkedList<T> &operator=(LinkedList<T> &&other) {
+	auto operator=(LinkedList<T> &&other) -> LinkedList<T> & {
 		if (this != &other) {
 			clear();
 
@@ -110,6 +110,10 @@ class LinkedList {
 	}
 
 	auto operator[](const size_t &i) -> T & {
+		return getNode(i)->data;
+	}
+
+	auto operator[](const size_t &i) const -> const T & {
 		return getNode(i)->data;
 	}
 
@@ -141,16 +145,28 @@ class LinkedList {
 		return size_;
 	};
 
-	auto pushFront(const T &data) -> void {
-		pushNodeAtHead(std::make_shared<Node>(data));
+	auto pushFront(const T &data) -> T & {
+		NodePtr newNode{std::make_shared<Node>(data)};
+
+		pushNodeAtHead(newNode);
+
+		return newNode->data;
 	};
 
-	auto pushBack(const T &data) -> void {
-		pushNodeAtTail(std::make_shared<Node>(data));
+	auto pushBack(const T &data) -> T & {
+		NodePtr newNode{std::make_shared<Node>(data)};
+
+		pushNodeAtTail(newNode);
+
+		return newNode->data;
 	};
 
-	auto pushAfter(const T &data, const size_t &i) -> void {
-		pushNodeAfter(getNode(i), std::make_shared<Node>(data));
+	auto pushAfter(const T &data, const size_t &i) -> T & {
+		NodePtr newNode{std::make_shared<Node>(data)};
+
+		pushNodeAfter(getNode(i), newNode);
+
+		return newNode->data;
 	};
 
 	auto pushBefore(const T &data, const size_t &i) -> void {
@@ -180,7 +196,7 @@ class LinkedList {
 	};
 
 	auto sort() -> void {
-		mergeSort(*this);
+		quickSort(*this, 0, size() - 1);
 	}
 
 	auto reverse() -> void {
@@ -195,7 +211,7 @@ class LinkedList {
 		}
 	};
 
-	auto isEmpty()const -> bool {
+	auto isEmpty() const -> bool {
 		return size_ == 0;
 	};
 
@@ -284,7 +300,7 @@ class LinkedList {
 	}
 
 	auto getNode(size_t i) const -> NodePtr {
-		if (i >= size_) throw std::out_of_range{ "Index out of range" };
+		if (i >= size_) throw std::out_of_range{"Index out of range"};
 
 		if (i == 0) return head_;
 		if (i == size_ - 1) return tail_;
@@ -340,6 +356,22 @@ class LinkedList {
 		while (r < right.size()) merged.pushBack(right[r++]);
 
 		list = std::move(merged);
+	}
+
+	auto quickSort(LinkedList<T> &list, size_t left, size_t right) -> void {
+		if (left >= right) return;
+
+		T pivot{list[right]};
+		size_t i{left};
+
+		for (size_t j{left}; j < right; ++j) {
+			if (list[j] <= pivot) std::swap(list[i++], list[j]);
+		}
+
+		std::swap(list[i], list[right]);
+
+		quickSort(list, left, i == 0 ? 0 : i - 1);
+		quickSort(list, i, right);
 	}
 };
 

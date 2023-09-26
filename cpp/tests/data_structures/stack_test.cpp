@@ -1,9 +1,9 @@
-
-#include "catch2/catch_test_macros.hpp"
 #include "data_structures/stack.hpp"
 
+#include <cstdlib>
 #include <vector>
 
+#include "catch2/catch_test_macros.hpp"
 
 TEST_CASE("Stack", "[Stack]") {
 	SECTION("push") {
