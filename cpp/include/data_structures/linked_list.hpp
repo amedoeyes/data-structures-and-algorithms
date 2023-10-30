@@ -83,6 +83,10 @@ class LinkedList {
 		}
 	}
 
+	~LinkedList() {
+		clear();
+	}
+
 	auto operator=(const LinkedList<T> &other) -> LinkedList<T> & {
 		if (this != &other) {
 			clear();
@@ -319,15 +323,16 @@ class LinkedList {
 		T data = node->data;
 
 		if (node == head_) {
-			head_ = node->next;
+			head_->prev = nullptr;
+			head_ = head_->next;
 		} else if (node == tail_) {
-			tail_ = node->prev;
+			tail_->next = nullptr;
+			tail_ = tail_->prev;
 		} else {
 			node->prev->next = node->next;
 			node->next->prev = node->prev;
 		}
 
-		node = nullptr;
 		--size_;
 
 		return data;
