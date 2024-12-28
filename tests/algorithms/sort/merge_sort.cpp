@@ -1,5 +1,6 @@
-#include "algorithms/merge_sort.hpp"
+#include "algorithms/sort/merge_sort.hpp"
 
+#include <array>
 #include <print>
 
 auto main() -> int {
