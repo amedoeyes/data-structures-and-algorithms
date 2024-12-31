@@ -1,7 +1,7 @@
-#include "algorithms/search/linear_search.hpp"
-
 #include <array>
 #include <print>
+
+import linear_search;
 
 auto main() -> int {
 	auto array = std::array{4, 2, 1, 7, 6};

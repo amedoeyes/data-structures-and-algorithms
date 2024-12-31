@@ -1,29 +1,30 @@
-#ifndef UNION_FIND_HPP
-#define UNION_FIND_HPP
+module;
 
 #include <cstdint>
 #include <functional>
 #include <unordered_map>
 #include <vector>
 
-template <typename T, typename Hash = std::hash<T>>
-class union_find {
+export module disjoint_set;
+
+export template <typename T, typename Hash = std::hash<T>>
+class disjoint_set {
 public:
-	explicit union_find(const std::vector<T>& vertices) {
+	explicit disjoint_set(const std::vector<T>& vertices) {
 		for (const auto& v : vertices) {
 			parent_[v] = v;
 			rank_[v] = 0;
 		}
 	}
 
-	auto find(T v) -> T {
+	auto find(const T& v) -> T {
 		if (parent_[v] != v) {
 			parent_[v] = find(parent_[v]);
 		}
 		return parent_[v];
 	}
 
-	void unite(T u, T v) {
+	auto unite(const T& u, const T& v) -> void {
 		T root_u = find(u);
 		T root_v = find(v);
 		if (root_u != root_v) {
@@ -38,9 +39,11 @@ public:
 		}
 	}
 
+	auto connected(const T& u, const T& v) -> bool {
+		return find(u) == find(v);
+	}
+
 private:
 	std::unordered_map<T, T, Hash> parent_;
 	std::unordered_map<T, int32_t, Hash> rank_;
 };
-
-#endif // !UNION_FIND_HPP

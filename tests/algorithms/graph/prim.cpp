@@ -1,10 +1,10 @@
-#include "algorithms/graph/prim.hpp"
-
 #include <cstdint>
 #include <print>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+import prim;
 
 auto main() -> int {
 	const auto graph = std::unordered_map<int32_t, std::vector<std::pair<int32_t, int32_t>>>{

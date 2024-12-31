@@ -1,11 +1,12 @@
-#ifndef BUBBLE_SORT_HPP
-#define BUBBLE_SORT_HPP
+module;
 
 #include <concepts>
 #include <functional>
 #include <ranges>
 
-template <typename T, typename Compare = std::ranges::less>
+export module bubble_sort;
+
+export template <typename T, typename Compare = std::ranges::less>
 	requires std::ranges::range<T>
 				&& std::predicate<Compare, std::ranges::range_value_t<T>, std::ranges::range_value_t<T>>
 constexpr auto bubble_sort(T& range, Compare comp = Compare{}) -> void {
@@ -22,5 +23,3 @@ constexpr auto bubble_sort(T& range, Compare comp = Compare{}) -> void {
 		--size;
 	}
 }
-
-#endif // !BUBBLE_SORT_HPP

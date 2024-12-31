@@ -1,9 +1,10 @@
-#ifndef BINARY_SORT_HPP
-#define BINARY_SORT_HPP
+module;
 
 #include <ranges>
 
-template <typename T>
+export module binary_search;
+
+export template <typename T>
 	requires std::ranges::range<T>
 constexpr auto binary_search(const T& range, const std::ranges::range_value_t<T>& target) -> T::const_iterator {
 	auto left_it = range.begin();
@@ -16,5 +17,3 @@ constexpr auto binary_search(const T& range, const std::ranges::range_value_t<T>
 	}
 	return range.end();
 }
-
-#endif // !BINARY_SORT_HPP

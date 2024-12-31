@@ -1,7 +1,4 @@
-#ifndef KRUSKAL_HPP
-#define KRUSKAL_HPP
-
-#include "data_structures/union_find.hpp"
+module;
 
 #include <concepts>
 #include <functional>
@@ -12,7 +9,11 @@
 #include <utility>
 #include <vector>
 
-template <typename G>
+export module kruskal;
+
+import disjoint_set;
+
+export template <typename G>
 	requires requires { typename G::key_type; } && requires(const G& g, G::key_type v) {
 		requires std::ranges::range<G>;
 		{ g.at(v) } -> std::ranges::range;
@@ -33,16 +34,14 @@ constexpr auto kruskal(const G& graph) -> std::unordered_map<typename G::key_typ
 	for (const auto& [u, edges] : graph) {
 		for (const auto& [v, w] : edges) pq.emplace(w, u, v);
 	}
-	auto uf = union_find(graph | std::views::keys | std::ranges::to<std::vector>());
+	auto ds = disjoint_set(graph | std::views::keys | std::ranges::to<std::vector>());
 	while (!pq.empty()) {
 		const auto [w, u, v] = pq.top();
 		pq.pop();
-		if (uf.find(u) != uf.find(v)) {
+		if (!ds.connected(u, v)) {
 			parent[v] = u;
-			uf.unite(u, v);
+			ds.unite(u, v);
 		}
 	}
 	return parent;
 }
-
-#endif // !KRUSKAL_HPP

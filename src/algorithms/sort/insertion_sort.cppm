@@ -1,11 +1,12 @@
-#ifndef INSERTION_SORT_HPP
-#define INSERTION_SORT_HPP
+module;
 
 #include <concepts>
 #include <functional>
 #include <ranges>
 
-template <typename T, typename Compare = std::ranges::less>
+export module insertion_sort;
+
+export template <typename T, typename Compare = std::ranges::less>
 	requires std::ranges::range<T>
 				&& std::predicate<Compare, std::ranges::range_value_t<T>, std::ranges::range_value_t<T>>
 constexpr auto insertion_sort(T& range, Compare comp = Compare{}) -> void {
@@ -19,5 +20,3 @@ constexpr auto insertion_sort(T& range, Compare comp = Compare{}) -> void {
 		*it2 = std::move(temp);
 	}
 }
-
-#endif // !INSERTION_SORT_HPP

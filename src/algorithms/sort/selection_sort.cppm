@@ -1,11 +1,12 @@
-#ifndef SELECTION_SORT_HPP
-#define SELECTION_SORT_HPP
+module;
 
 #include <concepts>
 #include <functional>
 #include <ranges>
 
-template <typename T, typename Compare = std::ranges::less>
+export module selection_sort;
+
+export template <typename T, typename Compare = std::ranges::less>
 	requires std::ranges::range<T>
 				&& std::predicate<Compare, std::ranges::range_value_t<T>, std::ranges::range_value_t<T>>
 constexpr auto selection_sort(T& range, Compare comp = Compare{}) -> void {
@@ -17,5 +18,3 @@ constexpr auto selection_sort(T& range, Compare comp = Compare{}) -> void {
 		if (it != min_it) std::ranges::swap(*it, *min_it);
 	}
 }
-
-#endif // !SELECTION_SORT_HPP

@@ -1,8 +1,8 @@
-#include "algorithms/graph/dfs.hpp"
-
 #include <print>
 #include <unordered_map>
 #include <vector>
+
+import dfs;
 
 auto main() -> int {
 	const auto graph = std::unordered_map<int, std::vector<int>>{

@@ -1,8 +1,8 @@
-#include "algorithms/graph/bfs.hpp"
-
 #include <print>
 #include <unordered_map>
 #include <vector>
+
+import bfs;
 
 auto main() -> int {
 	const auto graph = std::unordered_map<int, std::vector<int>>{

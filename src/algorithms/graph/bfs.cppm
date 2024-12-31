@@ -1,13 +1,14 @@
-#ifndef DFS_HPP
-#define DFS_HPP
+module;
 
 #include <concepts>
+#include <queue>
 #include <ranges>
 #include <set>
-#include <stack>
 #include <type_traits>
 
-template <typename G, typename V, typename Visit>
+export module bfs;
+
+export template <typename G, typename V, typename Visit>
 	requires requires(const G& g, const V& v) {
 		requires std::ranges::range<G>;
 		{ g.at(v) } -> std::ranges::range;
@@ -16,20 +17,18 @@ template <typename G, typename V, typename Visit>
 		requires std::invocable<Visit, V>;
 		requires std::same_as<std::invoke_result_t<Visit, V>, bool>;
 	}
-constexpr auto dfs(const G& graph, const V& source, Visit visit) -> void {
+auto bfs(const G& graph, const V& source, Visit visit) -> void {
 	auto visited = std::set<V>();
-	auto stack = std::stack<V>();
-	stack.emplace(source);
-	while (!stack.empty()) {
-		const auto u = stack.top();
-		stack.pop();
+	auto queue = std::queue<V>();
+	queue.emplace(source);
+	while (!queue.empty()) {
+		const auto u = queue.front();
+		queue.pop();
 		if (visited.contains(u)) continue;
 		visited.emplace(u);
 		if (!visit(u)) continue;
 		for (const auto& v : graph.at(u)) {
-			if (!visited.contains(v)) stack.emplace(v);
+			if (!visited.contains(v)) queue.emplace(v);
 		}
 	}
 }
-
-#endif // !DFS_HPP

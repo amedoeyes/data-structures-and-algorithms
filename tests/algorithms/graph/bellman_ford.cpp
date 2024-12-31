@@ -1,10 +1,10 @@
-#include "algorithms/graph/bellman_ford.hpp"
-
 #include <cstdint>
 #include <print>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+import bellman_ford;
 
 auto main() -> int {
 	const auto graph = std::unordered_map<int32_t, std::vector<std::pair<int32_t, int32_t>>>{
@@ -34,7 +34,7 @@ auto main() -> int {
 			std::println("Node {}: {}", node, distance);
 		}
 
-		std::println();
+		std::println("");
 
 		std::println("Parents:");
 		for (const auto& [node, parent] : p) {

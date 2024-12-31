@@ -1,5 +1,4 @@
-#ifndef PRIM_HPP
-#define PRIM_HPP
+module;
 
 #include <concepts>
 #include <functional>
@@ -11,7 +10,9 @@
 #include <utility>
 #include <vector>
 
-template <typename G, typename V>
+export module prim;
+
+export template <typename G, typename V>
 	requires requires(const G& g, const V& v) {
 		requires std::ranges::range<G>;
 		{ g.at(v) } -> std::ranges::range;
@@ -41,5 +42,3 @@ constexpr auto prim(const G& graph, const V& source) -> std::unordered_map<V, V>
 	}
 	return parent;
 }
-
-#endif // !PRIM_HPP

@@ -1,7 +1,7 @@
-#include "algorithms/sort/merge_sort.hpp"
-
 #include <array>
 #include <print>
+
+import merge_sort;
 
 auto main() -> int {
 	auto array = std::array{4, 2, 1, 7, 6};
@@ -10,7 +10,7 @@ auto main() -> int {
 	for (auto i : array) {
 		std::print("{} ", i);
 	}
-	std::println();
+	std::println("");
 
 	merge_sort(array);
 
@@ -18,5 +18,5 @@ auto main() -> int {
 	for (auto i : array) {
 		std::print("{} ", i);
 	}
-	std::println();
+	std::println("");
 }

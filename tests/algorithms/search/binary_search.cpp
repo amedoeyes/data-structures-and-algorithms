@@ -1,7 +1,7 @@
-#include "algorithms/search/binary_search.hpp"
-
 #include <array>
 #include <print>
+
+import binary_search;
 
 auto main() -> int {
 	auto array = std::array{1, 2, 3, 4, 5, 6};

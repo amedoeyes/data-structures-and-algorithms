@@ -1,5 +1,4 @@
-#ifndef MERGE_SORT_HPP
-#define MERGE_SORT_HPP
+module;
 
 #include <concepts>
 #include <functional>
@@ -7,7 +6,9 @@
 #include <ranges>
 #include <vector>
 
-template <typename T, typename Compare = std::ranges::less>
+export module merge_sort;
+
+export template <typename T, typename Compare = std::ranges::less>
 	requires std::ranges::range<T>
 				&& std::predicate<Compare, std::ranges::range_value_t<T>, std::ranges::range_value_t<T>>
 constexpr auto merge_sort(T& range, Compare comp = Compare{}) -> void {
@@ -27,5 +28,3 @@ constexpr auto merge_sort(T& range, Compare comp = Compare{}) -> void {
 	while (left_it != left.end()) *output_it++ = std::move(*left_it++);
 	while (right_it != right.end()) *output_it++ = std::move(*right_it++);
 }
-
-#endif // !MERGE_SORT_HPP

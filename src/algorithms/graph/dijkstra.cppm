@@ -1,5 +1,4 @@
-#ifndef DIJKSTRA_HPP
-#define DIJKSTRA_HPP
+module;
 
 #include <concepts>
 #include <functional>
@@ -11,7 +10,9 @@
 #include <utility>
 #include <vector>
 
-template <typename G, typename V>
+export module dijkstra;
+
+export template <typename G, typename V>
 	requires requires(const G& g, const V& v) {
 		requires std::ranges::range<G>;
 		{ g.at(v) } -> std::ranges::range;
@@ -48,5 +49,3 @@ constexpr auto dijkstra(const G& graph, const V& source) -> std::tuple<
 	}
 	return {dist, parent};
 }
-
-#endif // !DIJKSTRA_HPP

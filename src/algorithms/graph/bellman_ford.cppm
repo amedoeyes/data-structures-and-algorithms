@@ -1,5 +1,4 @@
-#ifndef DIJKSTRA_HPP
-#define DIJKSTRA_HPP
+module;
 
 #include <concepts>
 #include <optional>
@@ -8,7 +7,9 @@
 #include <unordered_map>
 #include <utility>
 
-template <typename G, typename V>
+export module bellman_ford;
+
+export template <typename G, typename V>
 	requires requires(const G& g, const V& v) {
 		requires std::ranges::range<G>;
 		{ g.at(v) } -> std::ranges::range;
@@ -48,5 +49,3 @@ constexpr auto bellman_ford(const G& graph, const V& source) -> std::optional<st
 	}
 	return std::tuple{dist, parent};
 }
-
-#endif // !DIJKSTRA_HPP
